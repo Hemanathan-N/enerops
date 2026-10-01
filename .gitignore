@@ -7,6 +7,7 @@ docker-compose.local.yml
 # Environment variables & secrets
 .env
 .env.local
+.env.example
 
 # Docker volume data
 timescaledb_data/
