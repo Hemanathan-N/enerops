@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from app.auth import get_current_user
 
-app = FastAPI(title="EnerOps AI Platform", version="1.0.0", dependencies=[Depends(get_current_user)])
+app = FastAPI(title="EnerOps AI Platform", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
