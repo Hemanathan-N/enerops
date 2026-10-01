@@ -16,9 +16,6 @@ services:
   # FastAPI Backend
   backend:
     image: hemanathan18/enerops-backend:latest
-    # build:
-    #   context: ./backend
-    #   dockerfile: Dockerfile
     container_name: enerops-backend
     restart: always
     ports:
@@ -31,9 +28,6 @@ services:
   # Next.js Frontend
   frontend:
     image: hemanathan18/enerops-frontend:latest
-    # build:
-    #   context: ./frontend
-    #   dockerfile: Dockerfile
     container_name: enerops-frontend
     restart: always
     ports:
