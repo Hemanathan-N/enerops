@@ -28,6 +28,8 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://32.197.41.172
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/enerops-frontend:latest
 
       - name: Build and Push Backend Image
