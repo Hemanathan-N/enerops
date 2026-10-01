@@ -14,6 +14,10 @@ app.add_middleware(
 
 from app.routers import energy, ai, hierarchy, production, cost, reports
 
+@app.get("/")
+async def root():
+    return {"message": "EnerOps API Platform is running", "docs": "/docs"}
+
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
