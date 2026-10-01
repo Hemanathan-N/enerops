@@ -7,7 +7,7 @@ app = FastAPI(title="EnerOps AI Platform", version="1.0.0", dependencies=[Depend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
