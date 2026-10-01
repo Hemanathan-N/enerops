@@ -34,15 +34,15 @@ const STATIC_pieData = [
 ];
 
 const sidebarItems = [
-  { name: 'Dashboard', icon: LayoutDashboard },
-  { name: 'Energy Monitoring', icon: Zap },
-  { name: 'Production', icon: Factory },
-  { name: 'Machines', icon: Settings },
-  { name: 'Cost & Tariff', icon: IndianRupee },
-  { name: 'Renewable Energy', icon: Sun },
-  { name: 'Carbon & Sustainability', icon: Leaf },
-  { name: 'AI Insights', icon: MessageSquare },
-  { name: 'Reports', icon: Activity },
+  { name: 'Dashboard', icon: LayoutDashboard, slug: 'dashboard' },
+  { name: 'Energy Monitoring', icon: Zap, slug: 'energy-monitoring' },
+  { name: 'Production', icon: Factory, slug: 'production' },
+  { name: 'Machines', icon: Settings, slug: 'machines' },
+  { name: 'Cost & Tariff', icon: IndianRupee, slug: 'cost-tariff' },
+  { name: 'Renewable Energy', icon: Sun, slug: 'renewable-energy' },
+  { name: 'Carbon & Sustainability', icon: Leaf, slug: 'carbon-sustainability' },
+  { name: 'AI Insights', icon: MessageSquare, slug: 'ai-insights' },
+  { name: 'Reports', icon: Activity, slug: 'reports' },
 ];
 
 export default function DashboardPage() {
@@ -110,6 +110,11 @@ export default function DashboardPage() {
         .catch(err => console.error("Error fetching forecast:", err));
   }, []);
 
+  const handleTabChange = (itemName: string, slug: string) => {
+    setActiveTab(itemName);
+    window.history.pushState(null, '', `/${slug}`);
+  };
+
   const handleChatSubmit = async (e: any) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
@@ -136,7 +141,6 @@ export default function DashboardPage() {
   };
 
   const renderContent = () => {
-    // Shared KPI Grid for all modules to show data context
     const sharedKPIs = (
       <div className="grid grid-cols-3 md:grid-cols-6 gap-4 mb-6">
         <KPICard title="Total Energy Consumption" value={`${metrics.total_energy_consumption_kwh.toLocaleString(undefined, {maximumFractionDigits:0})} kWh`} subtitle="vs. yesterday" icon={Zap} trend="down" trendValue="6.2%" color="bg-blue-500" />
@@ -248,13 +252,11 @@ export default function DashboardPage() {
       </div>
     );
 
-    // AI Insight component
     if (activeTab === 'AI Insights') {
       return (
         <div className="flex flex-col h-full">
           <div className="mb-4"><h1 className="text-2xl font-bold text-gray-900">AI Enterprise Assistant</h1></div>
           <div className="flex-1 flex flex-col bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden text-sm">
-            
             <div className="flex-1 overflow-auto p-6 space-y-4">
               {chatLog.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center">
@@ -303,7 +305,6 @@ export default function DashboardPage() {
         {sharedKPIs}
 
         <div className={`grid gap-6 mb-6 ${activeTab === 'Dashboard' ? 'grid-cols-3' : 'grid-cols-2'}`}>
-           {/* Render context-aware layout */}
            {activeTab === 'Dashboard' && (
              <>
                <div className="col-span-2">{energyTrendChart}</div>
@@ -349,8 +350,11 @@ export default function DashboardPage() {
         
         <nav className="flex-1 px-3 space-y-1">
           {sidebarItems.map((item) => (
-            <button key={item.name} onClick={() => setActiveTab(item.name)} 
-              className={`w-full text-left rounded-lg px-3 py-2 flex items-center gap-3 text-sm font-medium transition-colors ${activeTab === item.name ? 'bg-emerald-500 text-white' : 'hover:bg-slate-800'}`}>
+            <button 
+              key={item.name} 
+              onClick={() => handleTabChange(item.name, item.slug)} 
+              className={`w-full text-left rounded-lg px-3 py-2 flex items-center gap-3 text-sm font-medium transition-colors ${activeTab === item.name ? 'bg-emerald-500 text-white' : 'hover:bg-slate-800'}`}
+            >
               <item.icon size={18} /> {item.name}
             </button>
           ))}
