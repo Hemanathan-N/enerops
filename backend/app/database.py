@@ -2,10 +2,10 @@ import os
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 
-# Environment variable read pannum; illai enil Docker DB container name 'enerops-db'-ai use pannum
+# Environment variable read pannum; illai enil Docker DB container credentials use pannum
 DATABASE_URL = os.getenv(
-    "DATABASE_URL", 
-    "postgresql+asyncpg://enerops:enerops_password@enerops-db:5432/enerops"
+    "DATABASE_URL",
+    "postgresql+asyncpg://postgres:postgrespassword@enerops-db:5432/enerops"
 )
 
 engine = create_async_engine(DATABASE_URL, echo=os.getenv("DB_ECHO", "false").lower() == "true")
