@@ -25,8 +25,8 @@ pipeline {
                         sh "docker build -t ${DOCKER_HUB}/${APP_NAME_BACKEND}:latest ./backend"
                         sh "docker push ${DOCKER_HUB}/${APP_NAME_BACKEND}:latest"
 
-                        // Build & Push Frontend
-                        sh "docker build --build-arg NEXT_PUBLIC_API_URL=http://${EC2_IP}:8000 -t hemanathan18/enerops-frontend:latest ./frontend"
+                        // Build & Push Frontend (Nginx /api reverse proxy routing)
+                        sh "docker build --build-arg NEXT_PUBLIC_API_URL=http://${EC2_IP}/api -t ${DOCKER_HUB}/${APP_NAME_FRONTEND}:latest ./frontend"
                         sh "docker push ${DOCKER_HUB}/${APP_NAME_FRONTEND}:latest"
                     }
                 }
@@ -36,17 +36,24 @@ pipeline {
         stage('Deploy to AWS EC2 via SSH') {
             steps {
                 script {
-                    sshagent(['EC2-SSH']) {
-                        sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} 'mkdir -p ~/enerops'
-                            scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${EC2_IP}:~/enerops/
-                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} '
-                                cd ~/enerops
-                                docker compose pull
-                                docker compose down
-                                docker compose up -d
-                            '
-                        """
+                    // Jenkins Credentials-il irundhu Secret File (.env) matrum SSH Key-ai read seigiradhu
+                    configFileProvider([configFile(fileId: 'enerops-env-file', variable: 'SECRET_ENV')]) {
+                        sshagent(['EC2-SSH']) {
+                            sh """
+                                # 1. Directory create panni, docker-compose, nginx.conf & Jenkins Secret .env-ai EC2-ukku copy seivadhudhu
+                                ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} 'mkdir -p ~/enerops'
+                                scp -o StrictHostKeyChecking=no docker-compose.yml nginx.conf ubuntu@${EC2_IP}:~/enerops/
+                                scp -o StrictHostKeyChecking=no \${SECRET_ENV} ubuntu@${EC2_IP}:~/enerops/.env
+
+                                # 2. EC2-il containers-ai pull panni restart seiyuvadhudhu
+                                ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} '
+                                    cd ~/enerops
+                                    docker compose pull
+                                    docker compose down
+                                    docker compose up -d --remove-orphans
+                                '
+                            """
+                        }
                     }
                 }
             }
