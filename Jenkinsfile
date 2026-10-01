@@ -37,7 +37,7 @@ pipeline {
             steps {
                 script {
                     // Jenkins Credentials-il irundhu Secret File (.env) matrum SSH Key-ai read seigiradhu
-                    configFileProvider([configFile(fileId: 'enerops-env-file', variable: 'SECRET_ENV')]) {
+                    withCredentials([file(credentialsId: 'enerops-env-file', variable: 'SECRET_ENV')]) {
                         sshagent(['EC2-SSH']) {
                             sh """
                                 # 1. Directory create panni, docker-compose, nginx.conf & Jenkins Secret .env-ai EC2-ukku copy seivadhudhu
