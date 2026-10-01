@@ -1,0 +1,51 @@
+name: Deploy EnerOps to AWS EC2
+
+on:
+  push:
+    branches:
+      - main  # Illana unga branch name (master/dev) mathiko
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # 1. Setup target directory & fix permissions
+            mkdir -p ~/enerops
+            sudo chown -R ubuntu:ubuntu ~/enerops
+            
+            # 2. Update .env file from Secrets
+            cat << 'EOF' > ~/enerops/.env
+            ${{ secrets.ENV_FILE }}
+            EOF
+
+      - name: Copy Files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "docker-compose.yml,nginx.conf"
+          target: "~/enerops/"
+
+      - name: Restart Docker Containers
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/enerops
+            docker compose pull
+            docker compose down
+            docker compose up -d --remove-orphans
