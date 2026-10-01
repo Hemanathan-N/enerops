@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.auth import get_current_user
 
 app = FastAPI(title="EnerOps AI Platform", version="1.0.0")
 
+# Allow Frontend to call Backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,10 +22,10 @@ async def root():
 async def health_check():
     return {"status": "ok"}
 
+# Routers
 app.include_router(energy.router)
 app.include_router(ai.router)
 app.include_router(hierarchy.router)
 app.include_router(production.router)
 app.include_router(cost.router)
 app.include_router(reports.router)
-
