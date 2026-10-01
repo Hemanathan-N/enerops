@@ -26,7 +26,7 @@ pipeline {
                         sh "docker push ${DOCKER_HUB}/${APP_NAME_BACKEND}:latest"
 
                         // Build & Push Frontend
-                        sh "docker build --build-arg NEXT_PUBLIC_API_URL=http://18.207.109.73:8000 -t hemanathan18/enerops-frontend:latest ./frontend"
+                        sh "docker build --build-arg NEXT_PUBLIC_API_URL=http://${EC2_IP}:8000 -t hemanathan18/enerops-frontend:latest ./frontend"
                         sh "docker push ${DOCKER_HUB}/${APP_NAME_FRONTEND}:latest"
                     }
                 }
