@@ -5,7 +5,7 @@ pipeline {
         DOCKER_HUB = 'hemanathan18'
         APP_NAME_BACKEND = 'enerops-backend'
         APP_NAME_FRONTEND = 'enerops-frontend'
-        EC2_IP = "18.207.109.73"
+        EC2_IP = "32.197.41.172"
     }
 
     stages {
