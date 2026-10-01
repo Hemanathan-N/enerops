@@ -3,7 +3,7 @@ name: Deploy EnerOps to AWS EC2
 on:
   push:
     branches:
-      - main  # Illana unga branch name (master/dev) mathiko
+      - master  
 
 jobs:
   deploy:
