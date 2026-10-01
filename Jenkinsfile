@@ -18,7 +18,7 @@ pipeline {
         stage('Build & Push Docker Images') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'docker_pwd', passwordVariable: 'docker_un')]) {
+                    withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'docker_un', passwordVariable: 'docker_pwd')]) {
                         sh "docker login -u ${docker_un} -p ${docker_pwd}"
                         
                         // Build & Push Backend
