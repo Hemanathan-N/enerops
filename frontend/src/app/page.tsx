@@ -67,7 +67,9 @@ export default function DashboardPage() {
 
   React.useEffect(() => {
     const fetchProps = { headers: { 'Authorization': 'Bearer MOCK_TOKEN_ADMIN' } };
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    
+    // Relative URL - Uses same origin domain so Nginx proxies /v1 to FastAPI
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
 
     fetch(`${apiBase}/v1/energy/timeseries`, fetchProps)
         .then(res => res.json())
@@ -124,7 +126,7 @@ export default function DashboardPage() {
     setChatInput('');
 
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
       const res = await fetch(`${apiBase}/v1/ai/chat`, {
         method: 'POST',
         headers: { 
